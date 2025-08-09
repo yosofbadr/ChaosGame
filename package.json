@@ -1,5 +1,5 @@
 {
-  "name": "sierpinksitriangle",
+  "name": "chaosgame",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +16,7 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "vite": "^7.1.1"
