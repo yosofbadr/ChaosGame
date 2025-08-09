@@ -1,0 +1,36 @@
+import { ChaosGame } from "./ChaosGame";
+import Point from "./Point";
+
+export class FourCornerFractal extends ChaosGame {
+  protected defineVertices(): void {
+    this.vertices = [
+      new Point(0, 0, "#FF0000"), // Bottom left vertex
+      new Point(0, 600, "#00FF00"), // Top left vertex
+      new Point(800, 0, "#0000FF"), // Bottom right vertex
+      new Point(800, 600, "#FFFF00"), // Top right vertex
+    ];
+  }
+
+  public override play(iterations: number): Point[] {
+    const points: Point[] = [];
+    let prevIndex = Math.floor(Math.random() * this.vertices.length);
+
+    for (let i = 0; i < iterations; i++) {
+      let indexInc = Math.random() < 0.5 ? -1 : 1;
+
+      let currentIndex =
+        (prevIndex + indexInc + this.vertices.length) % this.vertices.length;
+      console.log(currentIndex, prevIndex, indexInc);
+      prevIndex = currentIndex;
+      const randomVertex = this.vertices[currentIndex];
+
+      this.currentPoint = new Point(
+        (this.currentPoint.x * randomVertex.x) / 2,
+        (this.currentPoint.y * randomVertex.y) / 2,
+        "#000000",
+      );
+      points.push(this.currentPoint);
+    }
+    return points;
+  }
+}

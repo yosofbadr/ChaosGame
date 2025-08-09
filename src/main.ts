@@ -2,6 +2,7 @@ import Point from "./Point";
 import Palette from "./Palette";
 import { SierpinskiTriangle } from "./SierpinskiTriangle";
 import { SierpinskiCarpet } from "./SierpinskiCarpet";
+import { FourCornerFractal } from "./FourCornerFractal";
 
 const canvas = document.getElementById("ChaosGameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d");
@@ -44,15 +45,24 @@ const sierpinskiCarpet = new SierpinskiCarpet(new Point(400, 300, "#000000"));
 
 const sierpinskiCarpetPoints = sierpinskiCarpet.play(1000000);
 
+const fourCornerFractal = new FourCornerFractal(new Point(400, 300, "#000000"));
+
+const fourCornerFractalPoints = fourCornerFractal.play(1000000);
+
 function animate() {
   // sierpinskiTrianglePoints.forEach((point: Point) => {
   //   point.draw(ctx!);
   // });
   //
 
-  sierpinskiCarpetPoints.forEach((point: Point) => {
+  // sierpinskiCarpetPoints.forEach((point: Point) => {
+  //   point.draw(ctx!);
+  // });
+
+  fourCornerFractalPoints.forEach((point: Point) => {
     point.draw(ctx!);
   });
+
   requestAnimationFrame(animate);
 }
 
