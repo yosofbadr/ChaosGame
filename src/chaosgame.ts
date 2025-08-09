@@ -1,76 +1,31 @@
-import Point from "./point";
-import Palette from "./palette";
+import Point from "./Point";
 
-const canvas = document.getElementById("ChaosGameCanvas") as HTMLCanvasElement;
-const ctx = canvas.getContext("2d");
+export abstract class ChaosGame {
+  protected vertices: Point[] = [];
+  protected currentPoint: Point;
 
-canvas.width = 800;
-canvas.height = 600;
+  constructor(initialPoint: Point) {
+    this.currentPoint = initialPoint;
+    this.defineVertices();
+  }
 
-const palette = new Palette();
+  protected abstract defineVertices(): void;
 
-const paletteSelectorContainer = document.getElementById(
-  "palette-selector-container",
-);
+  public play(iterations: number): Point[] {
+    const points: Point[] = [];
 
-palette.palettes.forEach((p, index) => {
-  const paletteDiv = document.createElement("div");
-  paletteDiv.classList.add("palette-option");
-  paletteDiv.dataset.paletteIndex = index.toString();
+    for (let i = 0; i < iterations; i++) {
+      const randomVertex =
+        this.vertices[Math.floor(Math.random() * this.vertices.length)];
 
-  p.forEach((color) => {
-    const colorSwatch = document.createElement("div");
-    colorSwatch.classList.add("color-swatch");
-    colorSwatch.style.backgroundColor = color;
-    paletteDiv.appendChild(colorSwatch);
-  });
+      this.currentPoint = new Point(
+        (this.currentPoint.x + randomVertex.x) / 2,
+        (this.currentPoint.y + randomVertex.y) / 2,
+        "#000000",
+      );
 
-  paletteDiv.addEventListener("click", () => {
-    palette.setCurrentPalette(index);
-  });
-
-  paletteSelectorContainer?.appendChild(paletteDiv);
-});
-
-const vertices: [Point, string][] = [
-  [
-    new Point(canvas.width / 2, 50, palette.getRandomColor()),
-    palette.getRandomColor(),
-  ],
-  [
-    new Point(50, canvas.height - 50, palette.getRandomColor()),
-    palette.getRandomColor(),
-  ],
-  [
-    new Point(canvas.width - 50, canvas.height - 50, palette.getRandomColor()),
-    palette.getRandomColor(),
-  ],
-];
-
-let currentPoint = new Point(
-  canvas.width / 2,
-  canvas.height / 2,
-  palette.getRandomColor(),
-);
-
-function getRandomVertex() {
-  return vertices[Math.floor(Math.random() * vertices.length)];
+      points.push(this.currentPoint);
+    }
+    return points;
+  }
 }
-
-const points: Point[] = [];
-
-for (let i = 0; i < 100000; i++) {
-  const randomVertex = getRandomVertex();
-  currentPoint.x = (currentPoint.x + randomVertex[0].x) / 2;
-  currentPoint.y = (currentPoint.y + randomVertex[0].y) / 2;
-  points.push(new Point(currentPoint.x, currentPoint.y, randomVertex[1]));
-}
-
-function animate() {
-  points.forEach((point: Point) => {
-    point.draw(ctx!);
-  });
-  requestAnimationFrame(animate);
-}
-
-animate();
