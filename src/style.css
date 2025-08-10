@@ -1,5 +1,6 @@
 body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -38,4 +39,36 @@ canvas {
   height: 16px;
   margin: 1px;
   border-radius: 3px;
+}
+
+.palette-option.selected {
+  border-color: #333;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.fractal-selector-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.fractal-option {
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.fractal-option:hover {
+  background-color: #eee;
+  border-color: #999;
+}
+
+.fractal-option.selected {
+  background-color: #ddd;
+  border-color: #333;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }

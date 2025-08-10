@@ -11,10 +11,10 @@ class Point {
     this.colour = colour;
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, color: string) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = this.colour;
+    ctx.fillStyle = color;
     ctx.fill();
     ctx.closePath();
   }
