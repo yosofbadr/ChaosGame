@@ -3,6 +3,8 @@ import Palette from "./Palette";
 import { SierpinskiTriangle } from "./SierpinskiTriangle";
 import { SierpinskiCarpet } from "./SierpinskiCarpet";
 import { FourCornerFractal } from "./FourCornerFractal";
+import { NoTwoPlacesAwayRule } from "./rules/NoTwoPlacesAwayRule";
+import { NoNeighbourRepeatRule } from "./rules/NoNeighbourRepeatRule";
 
 const canvas = document.getElementById("ChaosGameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d");
@@ -45,9 +47,19 @@ const sierpinskiCarpet = new SierpinskiCarpet(new Point(400, 300, "#000000"));
 
 const sierpinskiCarpetPoints = sierpinskiCarpet.play(1000000);
 
-const fourCornerFractal = new FourCornerFractal(new Point(400, 300, "#000000"));
+const fourCornerFractal = new FourCornerFractal(
+  new Point(400, 300, "#000000"),
+  new NoTwoPlacesAwayRule(),
+);
 
 const fourCornerFractalPoints = fourCornerFractal.play(1000000);
+
+const fourCornerFractal2 = new FourCornerFractal(
+  new Point(400, 300, "#000000"),
+  new NoNeighbourRepeatRule(),
+);
+
+const fourCornerFractalPoints2 = fourCornerFractal2.play(1000000);
 
 function animate() {
   // sierpinskiTrianglePoints.forEach((point: Point) => {
@@ -59,10 +71,13 @@ function animate() {
   //   point.draw(ctx!);
   // });
 
-  fourCornerFractalPoints.forEach((point: Point) => {
+  // fourCornerFractalPoints.forEach((point: Point) => {
+  //   point.draw(ctx!);
+  // });
+
+  fourCornerFractalPoints2.forEach((point: Point) => {
     point.draw(ctx!);
   });
-
   requestAnimationFrame(animate);
 }
 

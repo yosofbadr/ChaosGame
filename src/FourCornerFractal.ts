@@ -1,37 +1,34 @@
-import { ChaosGame } from "./ChaosGame";
 import Point from "./Point";
 import Palette from "./Palette";
+import { FractalRule } from "./rules/FractalRule";
 
-export class FourCornerFractal extends ChaosGame {
+export class FourCornerFractal {
+  protected vertices: Point[] = [];
+  protected currentPoint: Point;
+  private rule: FractalRule;
+
+  constructor(initialPoint: Point, rule: FractalRule) {
+    this.currentPoint = initialPoint;
+    this.rule = rule;
+    this.defineVertices();
+  }
+
   protected defineVertices(): void {
     const palette = new Palette();
     this.vertices = [
-      new Point(0, 0, palette.getRandomColor()), // Bottom left vertex
-      new Point(0, 600, palette.getRandomColor()), // Top left vertex
-      new Point(800, 600, palette.getRandomColor()), // Top right vertex
-      new Point(800, 0, palette.getRandomColor()), // Bottom right vertex
+      new Point(0, 0, palette.getRandomColor()),
+      new Point(0, 600, palette.getRandomColor()),
+      new Point(800, 600, palette.getRandomColor()),
+      new Point(800, 0, palette.getRandomColor()),
     ];
   }
 
-  public override play(iterations: number): Point[] {
-    const points: Point[] = [];
-    let prevIndex = Math.floor(Math.random() * this.vertices.length);
+  public setRule(rule: FractalRule): void {
+    this.rule = rule;
+  }
 
-    for (let i = 0; i < iterations; i++) {
-      let indexInc = Math.floor(Math.random() * 3) - 1;
-
-      let currentIndex =
-        (prevIndex + indexInc + this.vertices.length) % this.vertices.length;
-      prevIndex = currentIndex;
-      const randomVertex = this.vertices[currentIndex];
-
-      this.currentPoint = new Point(
-        (this.currentPoint.x + randomVertex.x) / 2,
-        (this.currentPoint.y + randomVertex.y) / 2,
-        randomVertex.colour,
-      );
-      points.push(this.currentPoint);
-    }
-    return points;
+  public play(iterations: number): Point[] {
+    // The class delegates the play logic to the current rule object.
+    return this.rule.play(this.vertices, this.currentPoint, iterations);
   }
 }
