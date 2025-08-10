@@ -20,19 +20,31 @@ export class SierpinskiCarpet extends ChaosGame {
     ];
   }
 
-  public override play(iterations: number): Point[] {
-    const points: Point[] = [];
-    for (let i = 0; i < iterations; i++) {
-      const randomVertex =
-        this.vertices[Math.floor(Math.random() * this.vertices.length)];
+  public override play(iterations: number): number {
+    this.shouldAnimate = true;
+    let i = 0;
+    const pointsPerFrame = 500;
 
-      this.currentPoint = new Point(
-        (this.currentPoint.x + 2 * randomVertex.x) / 3,
-        (this.currentPoint.y + 2 * randomVertex.y) / 3,
-        "#000000",
-      );
-      points.push(this.currentPoint);
-    }
-    return points;
+    const animate = () => {
+      if (i < iterations && this.shouldAnimate) {
+        for (let j = 0; j < pointsPerFrame; j++) {
+          if (i < iterations) {
+            const randomVertex =
+              this.vertices[Math.floor(Math.random() * this.vertices.length)];
+
+            this.currentPoint = new Point(
+              (this.currentPoint.x + 2 * randomVertex.x) / 3,
+              (this.currentPoint.y + 2 * randomVertex.y) / 3,
+              "#000000",
+            );
+            this.currentPoint.draw(this.ctx, this.palette.getRandomColor());
+            i++;
+          }
+        }
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+    let animationFrameId = requestAnimationFrame(animate);
+    return animationFrameId;
   }
 }

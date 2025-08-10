@@ -6,10 +6,20 @@ export class FourCornerFractal {
   protected vertices: Point[] = [];
   protected currentPoint: Point;
   private rule: FractalRule;
+  private ctx: CanvasRenderingContext2D;
+  private palette: Palette;
+  private shouldAnimate: boolean = true;
 
-  constructor(initialPoint: Point, rule: FractalRule) {
+  constructor(
+    initialPoint: Point,
+    rule: FractalRule,
+    ctx: CanvasRenderingContext2D,
+    palette: Palette,
+  ) {
     this.currentPoint = initialPoint;
     this.rule = rule;
+    this.ctx = ctx;
+    this.palette = palette;
     this.defineVertices();
   }
 
@@ -27,8 +37,20 @@ export class FourCornerFractal {
     this.rule = rule;
   }
 
-  public play(iterations: number): Point[] {
+  public stopAnimation() {
+    this.shouldAnimate = false;
+  }
+
+  public play(iterations: number): number {
+    this.shouldAnimate = true;
     // The class delegates the play logic to the current rule object.
-    return this.rule.play(this.vertices, this.currentPoint, iterations);
+    return this.rule.play(
+      this.vertices,
+      this.currentPoint,
+      iterations,
+      this.ctx,
+      this.palette,
+      () => this.shouldAnimate,
+    );
   }
 }

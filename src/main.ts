@@ -5,7 +5,8 @@ import { SierpinskiCarpet } from "./SierpinskiCarpet";
 import { FourCornerFractal } from "./FourCornerFractal";
 import { NoTwoPlacesAwayRule } from "./rules/NoTwoPlacesAwayRule";
 import { NoNeighbourRepeatRule } from "./rules/NoNeighbourRepeatRule";
-import ChaosGame from "./ChaosGame";
+import { ChaosGame } from "./ChaosGame";
+import { BarnsleyFern } from "./BarnsleyFern";
 
 const canvas = document.getElementById("ChaosGameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
@@ -23,20 +24,19 @@ const fractalSelectorContainer = document.getElementById(
   "fractal-selector-container",
 )!;
 
-let chaosGame: ChaosGame;
-let points: Point[] = [];
+let chaosGame: ChaosGame | FourCornerFractal;
+let animationFrameId: number | null = null;
 
-function selectFractal(fractal: ChaosGame, iterations: number) {
-  chaosGame = fractal;
-  points = chaosGame.play(iterations);
-  drawFractal();
-}
-
-function drawFractal() {
+function selectFractal(
+  fractal: ChaosGame | FourCornerFractal,
+  iterations: number,
+) {
+  if (chaosGame) {
+    chaosGame.stopAnimation();
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  points.forEach((point) => {
-    point.draw(ctx, palette.getRandomColor());
-  });
+  chaosGame = fractal;
+  animationFrameId = chaosGame.play(iterations);
 }
 
 function createPaletteSelector() {
@@ -61,7 +61,6 @@ function createPaletteSelector() {
         selectedPalette.classList.remove("selected");
       }
       paletteDiv.classList.add("selected");
-      drawFractal();
     });
 
     paletteSelectorContainer.appendChild(paletteDiv);
@@ -71,30 +70,38 @@ function createPaletteSelector() {
 function createFractalSelector() {
   const fractalOptions = {
     "sierpinski-triangle": {
-      fractal: new SierpinskiTriangle(
-        new Point(400, 100, "#000000"),
-        new Point(100, 500, "#000000"),
-        new Point(700, 500, "#000000"),
-      ),
-      iterations: 100000,
+      fractal: () =>
+        new SierpinskiTriangle(new Point(400, 100, "#000000"), ctx, palette),
+      iterations: 5000000,
     },
     "sierpinski-carpet": {
-      fractal: new SierpinskiCarpet(new Point(400, 300, "#000000")),
-      iterations: 1000000,
+      fractal: () =>
+        new SierpinskiCarpet(new Point(400, 300, "#000000"), ctx, palette),
+      iterations: 5000000,
     },
     "four-corner-fractal": {
-      fractal: new FourCornerFractal(
-        new Point(400, 300, "#000000"),
-        new NoTwoPlacesAwayRule(),
-      ),
-      iterations: 1000000,
+      fractal: () =>
+        new FourCornerFractal(
+          new Point(400, 300, "#000000"),
+          new NoTwoPlacesAwayRule(),
+          ctx,
+          palette,
+        ),
+      iterations: 5000000,
     },
-    "four-corner-fractal-2": {
-      fractal: new FourCornerFractal(
-        new Point(400, 300, "#000000"),
-        new NoNeighbourRepeatRule(),
-      ),
-      iterations: 1000000,
+    "vicsek-fractal": {
+      fractal: () =>
+        new FourCornerFractal(
+          new Point(400, 300, "#000000"),
+          new NoNeighbourRepeatRule(),
+          ctx,
+          palette,
+        ),
+      iterations: 5000000,
+    },
+    "barnsley-fern": {
+      fractal: () => new BarnsleyFern(new Point(0, 0, "#000000"), ctx, palette),
+      iterations: 5000000,
     },
   };
 
@@ -103,10 +110,8 @@ function createFractalSelector() {
       const fractalName = button.getAttribute("data-fractal")!;
       const selectedOption =
         fractalOptions[fractalName as keyof typeof fractalOptions];
-      selectFractal(selectedOption.fractal, selectedOption.iterations);
-      const selectedButton = document.querySelector(
-        ".fractal-option.selected",
-      );
+      selectFractal(selectedOption.fractal(), selectedOption.iterations);
+      const selectedButton = document.querySelector(".fractal-option.selected");
       if (selectedButton) {
         selectedButton.classList.remove("selected");
       }
@@ -119,11 +124,9 @@ function initialize() {
   createPaletteSelector();
   createFractalSelector();
 
-  // Select the first palette by default
   (paletteSelectorContainer.children[0] as HTMLElement).click();
-
-  // Select the first fractal by default
   (fractalSelectorContainer.children[0] as HTMLElement).click();
 }
 
 initialize();
+
