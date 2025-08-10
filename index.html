@@ -4,14 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chaos Game</title>
-    <script type="module" crossorigin src="/chaosgame/assets/index-Dk07fHgb.js"></script>
-    <link rel="stylesheet" crossorigin href="/chaosgame/assets/index-CQzK9-lJ.css">
+    <script type="module" crossorigin src="/chaosgame/assets/index-C4tiyepU.js"></script>
+    <link rel="stylesheet" crossorigin href="/chaosgame/assets/index-JUf3FYes.css">
   </head>
   <body>
+    <h1>Chaos Game</h1>
     <canvas id="ChaosGameCanvas" width="800" height="600"></canvas>
     <div
       class="palette-selector-container"
       id="palette-selector-container"
     ></div>
+    <div class="fractal-selector-container" id="fractal-selector-container">
+      <button class="fractal-option" data-fractal="sierpinski-triangle">Sierpinski Triangle</button>
+      <button class="fractal-option" data-fractal="sierpinski-carpet">Sierpinski Carpet</button>
+      <button class="fractal-option" data-fractal="four-corner-fractal">Four Corner Fractal</button>
+      <button class="fractal-option" data-fractal="vicsek-fractal">Vicsek Fractal</button>
+      <button class="fractal-option" data-fractal="barnsley-fern">Barnsley Fern</button>
+    </div>
   </body>
 </html>
